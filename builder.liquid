@@ -1,0 +1,1329 @@
+<style>
+  #zendrop-builder--{{ section.id }} {
+    background-color: {{ section.settings.background_color }};
+    color: {{ section.settings.text_color }};
+  }
+
+  #zendrop-builder--{{ section.id }} h2,
+  #zendrop-builder--{{ section.id }} h3,
+  #zendrop-builder--{{ section.id }} p,
+  #zendrop-builder--{{ section.id }} button,
+  #zendrop-builder--{{ section.id }} span {
+    color: {{ section.settings.text_color }};
+  }
+
+  #zendrop-builder--{{ section.id }} a.rich-text-block__button,
+  #zendrop-builder--{{ section.id }} a.multi-column-block__button {
+    background-color: {{ section.settings.button_color }};
+    color: {{ section.settings.button_label_color }};
+  }
+
+  #zendrop-builder--{{ section.id }}.display-mobile {
+    display: none;
+  }
+
+  @media screen and (max-width: 749px) {
+    #zendrop-builder--{{ section.id }}.display-desktop {
+      display: none;
+    }
+    #zendrop-builder--{{ section.id }}.display-mobile {
+      display: block;
+    }
+  }
+
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  /* Main container */
+  #zendrop-builder--{{ section.id }} .zendrop-builder {
+    width: 100%;
+    max-width: var(--page-width, 1200px);
+    margin: 0 auto;
+  }
+
+  /* Grid layout */
+  #zendrop-builder--{{ section.id }} .zendrop-builder__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-columns, 1), 1fr);
+    column-gap: {{ section.settings.space_between_col }}px;
+    row-gap: {{ section.settings.space_between_row }}px;
+    align-items: {{ section.settings.alignment }};
+  }
+
+  /* Common block styles */
+  #zendrop-builder--{{ section.id }} .zendrop-builder__block {
+    margin-bottom: var(--block-spacing, 30px);
+  }
+
+  /* Rich Text Block */
+  #zendrop-builder--{{ section.id }} .rich-text-block {
+    text-align: var(--text-alignment, left);
+  }
+
+  #zendrop-builder--{{ section.id }} .rich-text-block__heading {
+    font-size: var(--heading-font-size, 24px);
+    line-height: 1.2;
+    margin-bottom: 15px;
+    margin-top: 0;
+  }
+
+  #zendrop-builder--{{ section.id }} .rich-text-block__text {
+    font-size: var(--text-font-size, 16px);
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+
+  #zendrop-builder--{{ section.id }} .rich-text-block__button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: var(--button-background-color, #000);
+    color: var(--button-text-color, #fff);
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+  }
+
+  #zendrop-builder--{{ section.id }} .rich-text-block__button:hover {
+    background-color: var(--button-hover-background-color, #333);
+  }
+
+  /* Image Block */
+  #zendrop-builder--{{ section.id }} .image-block {
+    text-align: center;
+  }
+
+  #zendrop-builder--{{ section.id }} .image-block__image,
+  #zendrop-builder--{{ section.id }} .image-block__placeholder {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+
+  /* Video Block */
+  #zendrop-builder--{{ section.id }} .video-block {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  }
+
+  #zendrop-builder--{{ section.id }} .video-block__container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  #zendrop-builder--{{ section.id }} .video-block__iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  #zendrop-builder--{{ section.id }} .video-block__placeholder {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+
+  /* Custom HTML Block */
+  #zendrop-builder--{{ section.id }} .custom-html-block {
+    width: 100%;
+  }
+
+  /* Multi-column Block */
+  #zendrop-builder--{{ section.id }} .multi-column-block {
+    display: grid;
+    gap: 20px;
+  }
+
+  #zendrop-builder--{{ section.id }} .column-2 { grid-template-columns: repeat(2, 1fr); }
+  #zendrop-builder--{{ section.id }} .column-3 { grid-template-columns: repeat(3, 1fr); }
+  #zendrop-builder--{{ section.id }} .column-4 { grid-template-columns: repeat(4, 1fr); }
+
+  #zendrop-builder--{{ section.id }} .multi-column-block__column {
+    text-align: center;
+  }
+
+  #zendrop-builder--{{ section.id }} .multi-column-block__image,
+  #zendrop-builder--{{ section.id }} .multi-column-block__placeholder {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto 15px;
+  }
+
+  #zendrop-builder--{{ section.id }} .multi-column-block__heading {
+    font-size: var(--multi-column-heading-font-size, 20px);
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  #zendrop-builder--{{ section.id }} .multi-column-block__text {
+    font-size: var(--multi-column-text-font-size, 14px);
+    line-height: 1.5;
+    margin-bottom: 15px;
+  }
+
+  #zendrop-builder--{{ section.id }} .multi-column-block__button {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: var(--button-background-color, #000);
+    color: var(--button-text-color, #fff);
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    font-size: var(--multi-column-button-font-size, 14px);
+  }
+
+  #zendrop-builder--{{ section.id }} .multi-column-block__button:hover {
+    background-color: var(--button-hover-background-color, #333);
+  }
+
+  /* Responsive adjustments */
+  @media screen and (max-width: 749px) {
+    #zendrop-builder--{{ section.id }} .zendrop-builder__grid {
+      grid-template-columns: 1fr;
+    }
+
+    #zendrop-builder--{{ section.id }} .column-2,
+    #zendrop-builder--{{ section.id }} .column-3,
+    #zendrop-builder--{{ section.id }} .column-4 {
+      grid-template-columns: 1fr;
+    }
+
+    #zendrop-builder--{{ section.id }} .rich-text-block__heading {
+      font-size: var(--heading-font-size-mobile, 20px);
+    }
+
+    #zendrop-builder--{{ section.id }} .rich-text-block__text {
+      font-size: var(--text-font-size-mobile, 14px);
+    }
+
+    #zendrop-builder--{{ section.id }} .multi-column-block__heading {
+      font-size: var(--multi-column-heading-font-size-mobile, 18px);
+    }
+
+    #zendrop-builder--{{ section.id }} .multi-column-block__text {
+      font-size: var(--multi-column-text-font-size-mobile, 13px);
+    }
+  }
+
+  #zendrop-builder--{{ section.id }} .accordion-block {
+    width: 100%;
+  }
+
+  #zendrop-builder--{{ section.id }} .accordion-block__heading {
+    font-size: var(--heading-font-size, 24px);
+    margin-bottom: 20px;
+    margin-top: 0;
+  }
+
+  #zendrop-builder--{{ section.id }} .accordion-block__description {
+    margin-bottom: 30px;
+  }
+
+  #zendrop-builder--{{ section.id }} .accordion-item {
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  #zendrop-builder--{{ section.id }} .accordion-item__toggle {
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    padding: 15px 0;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  #zendrop-builder--{{ section.id }} .accordion-item__icon {
+    font-size: 24px;
+    transition: transform 0.3s ease;
+  }
+
+  #zendrop-builder--{{ section.id }} .accordion-item__toggle[aria-expanded="true"] .accordion-item__icon {
+    transform: rotate(45deg);
+  }
+
+  #zendrop-builder--{{ section.id }} .accordion-item__content {
+    padding: 0 0 15px;
+    line-height: 1.6;
+  }
+
+  @media screen and (max-width: 749px) {
+    #zendrop-builder--{{ section.id }} .accordion-block__heading {
+      font-size: var(--heading-font-size-mobile, 20px);
+    }
+
+    #zendrop-builder--{{ section.id }} .accordion-item__toggle {
+      font-size: 16px;
+    }
+  }
+
+  #zendrop-builder--{{ section.id }} .slideshow-block {
+    width: 100%;
+  }
+
+  #zendrop-builder--{{ section.id }} .image-video-slider {
+    position: relative;
+    visibility: hidden; /* Initially hide the slider */
+  }
+
+  #zendrop-builder--{{ section.id }} .slick-slide {
+    padding: 10px;
+  }
+
+  #zendrop-builder--{{ section.id }} .slick-slide img {
+    max-width: 100%;
+    border-radius: calc(var(--media-radius) - var(--media-border-width));
+  }
+
+  #zendrop-builder--{{ section.id }} .slideshow__content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+  }
+
+  #zendrop-builder--{{ section.id }} .slideshow__heading {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+
+  #zendrop-builder--{{ section.id }} .slideshow__text {
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+
+  #zendrop-builder--{{ section.id }} .slideshow__button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #fff;
+    color: #000;
+    text-decoration: none;
+    border-radius: 4px;
+  }
+
+  #zendrop-builder--{{ section.id }} .slick-dots {
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    list-style: none;
+    gap: 5px;
+  }
+
+  #zendrop-builder--{{ section.id }} .slick-dots li button {
+    font-size: 0;
+    padding: 0;
+    background: #ccc;
+    width: 10px;
+    height: 10px;
+    border: 1px solid #ccc;
+    border-radius: 100px;
+  }
+
+  #zendrop-builder--{{ section.id }} .slick-dots li.slick-active button {
+    background-color: #000;
+    border-color: #000;
+  }
+
+  #zendrop-builder--{{ section.id }} .material-symbols-outlined.slick-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  #zendrop-builder--{{ section.id }} .material-symbols-outlined.slick-arrow:first-of-type {
+    left: -25px;
+  }
+
+  #zendrop-builder--{{ section.id }} .material-symbols-outlined.slick-arrow:last-of-type {
+    right: -25px;
+  }
+
+  @media(max-width: 749px) {
+    #zendrop-builder--{{ section.id }} .material-symbols-outlined.slick-arrow:first-of-type {
+      left: -15px;
+    }
+    #zendrop-builder--{{ section.id }} .material-symbols-outlined.slick-arrow:last-of-type {
+      right: -15px;
+    }
+  }
+
+  #zendrop-builder--{{ section.id }} .center-align .slick-track {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #zendrop-builder--{{ section.id }} .icons-with-text__icon-item--next-to-title .icons-with-text__icon__title {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 10px;
+  }
+  #zendrop-builder--{{ section.id }} .icons-with-text__icon-item--next-to-title .icons-with-text__icon__title span {
+    margin-bottom: 3px;
+  }
+</style>
+
+<div
+  id="zendrop-builder--{{ section.id }}"
+  class="zendrop-builder section-{{ section.id }}-padding display-{{ section.settings.display }}"
+>
+  <div class="page-width">
+    <div class="zendrop-builder__grid" style="--grid-columns: {{ section.settings.columns }};">
+      {% for block in section.blocks %}
+        {% case block.type %}
+          {% when 'icon_with_text' %}
+            <div class="zendrop-builder__block icon-with-text-block" {{ block.shopify_attributes }}>
+              {% unless block.settings.title == blank and block.settings.text == blank %}
+                <div class="icons-with-text__icon-item icons-with-text__icon-item--{{ block.settings.icon_position }}">
+                  {% if block.settings.icon_position != 'next-to-title' %}
+                    <div class="icons-with-text__icon__icon color-{{ block.settings.icon_color }}">
+                      {%- if block.settings.image != blank -%}
+                        <img
+                          src="{{ block.settings.image | image_url: width: 300 }}"
+                          {% if block.settings.image.alt != blank %}
+                            alt="{{ block.settings.image.alt | escape }}"
+                          {% else %}
+                            role="presentation"
+                          {% endif %}
+                          height="auto"
+                          width="auto"
+                          loading="lazy"
+                        >
+                      {%- elsif block.settings.icon != 'none' -%}
+                        {% render 'material-icon', icon: block.settings.icon, filled: block.settings.filled_icon %}
+                      {%- endif -%}
+                    </div>
+                  {% endif %}
+                  <div class="icons-with-text__icon__text">
+                    <h3 class="icons-with-text__icon__title {{ block.settings.icon_heading_size }}">
+                      {% if block.settings.icon_position == 'next-to-title' %}
+                        <div class="icons-with-text__icon__icon icons-with-text__icon__icon--title color-{{ block.settings.icon_color }}">
+                          {%- if block.settings.image != blank -%}
+                            <img
+                              src="{{ block.settings.image | image_url: width: 300 }}"
+                              {% if block.settings.image.alt != blank %}
+                                alt="{{ block.settings.image.alt | escape }}"
+                              {% else %}
+                                role="presentation"
+                              {% endif %}
+                              height="auto"
+                              width="auto"
+                              loading="lazy"
+                            >
+                          {%- elsif block.settings.icon != 'none' -%}
+                            {% render 'material-icon',
+                              icon: block.settings.icon,
+                              filled: block.settings.filled_icon
+                            %}
+                          {%- endif -%}
+                        </div>
+                      {% endif %}
+                      <span>
+                        {{ block.settings.title | escape }}
+                      </span>
+                    </h3>
+                    {%- if block.settings.text != blank -%}
+                      <div class="rte">
+                        {{ block.settings.text }}
+                      </div>
+                    {%- endif -%}
+                  </div>
+                </div>
+              {% endunless %}
+
+              {% unless block.settings.title_second == blank and block.settings.text_second == blank %}
+                <div class="icons-with-text__icon-item icons-with-text__icon-item--{{ block.settings.icon_position_second }}">
+                  {% if block.settings.icon_position_second != 'next-to-title' %}
+                    <div class="icons-with-text__icon__icon color-{{ block.settings.icon_color_second }}">
+                      {%- if block.settings.image_second != blank -%}
+                        <img
+                          src="{{ block.settings.image_second | image_url: width: 300 }}"
+                          {% if block.settings.image_second.alt != blank %}
+                            alt="{{ block.settings.image_second.alt | escape }}"
+                          {% else %}
+                            role="presentation"
+                          {% endif %}
+                          height="auto"
+                          width="auto"
+                          loading="lazy"
+                        >
+                      {%- elsif block.settings.icon_second != 'none' -%}
+                        {% render 'material-icon', icon: block.settings.icon_second, filled: block.settings.filled_icon_second %}
+                      {%- endif -%}
+                    </div>
+                  {% endif %}
+                  <div class="icons-with-text__icon__text">
+                    <h3 class="icons-with-text__icon__title {{ block.settings.icon_heading_size_second }}">
+                      {% if block.settings.icon_position_second == 'next-to-title' %}
+                        <div class="icons-with-text__icon__icon icons-with-text__icon__icon--title color-{{ block.settings.icon_color_second }}">
+                          {%- if block.settings.image_second != blank -%}
+                            <img
+                              src="{{ block.settings.image_second | image_url: width: 300 }}"
+                              {% if block.settings.image_second.alt != blank %}
+                                alt="{{ block.settings.image_second.alt | escape }}"
+                              {% else %}
+                                role="presentation"
+                              {% endif %}
+                              height="auto"
+                              width="auto"
+                              loading="lazy"
+                            >
+                          {%- elsif block.settings.icon_second != 'none' -%}
+                            {% render 'material-icon',
+                              icon: block.settings.icon_second,
+                              filled: block.settings.filled_icon_second
+                            %}
+                          {%- endif -%}
+                        </div>
+                      {% endif %}
+                      <span>
+                        {{ block.settings.title_second | escape }}
+                      </span>
+                    </h3>
+                    {%- if block.settings.text_second != blank -%}
+                      <div class="rte">
+                        {{ block.settings.text_second }}
+                      </div>
+                    {%- endif -%}
+                  </div>
+                </div>
+              {% endunless %}   
+            </div>
+       
+          {% when 'rich_text' %}
+            <div
+              class="zendrop-builder__block rich-text-block"
+              {{ block.shopify_attributes }}
+              style="text-align: {{ block.settings.alignment }};"
+            >
+              {% if block.settings.heading != blank %}
+                <h2 class="custom-columns__title {{ block.settings.heading_size }} {{ block.settings.alignment }} {{ block.settings.mobile_alignment }}">
+                  {{ block.settings.heading }}
+                </h2>
+              {% endif %}
+              {% if block.settings.text != blank %}
+                <div class="rte {{ block.settings.text_style }} {{ block.settings.alignment }} {{ block.settings.mobile_alignment }}">
+                  {{ block.settings.text }}
+                </div>
+              {% endif %}
+              {% if block.settings.button_label != blank %}
+                <a href="{{ block.settings.button_link }}" class="rich-text-block__button">
+                  {{- block.settings.button_label -}}
+                </a>
+              {% endif %}
+            </div>
+
+            <style>
+              #zendrop-builder--{{ section.id }} .zendrop-builder__block.rich-text-block {
+                display: inline-flex;
+                flex-direction: column;
+                gap: {{ block.settings.space_between_items }}px;
+              }
+            </style>
+
+          {% when 'image' %}
+            <div class="zendrop-builder__block image-block" {{ block.shopify_attributes }}>
+              {% if block.settings.image != blank %}
+                {{
+                  block.settings.image
+                  | image_url: width: 2000
+                  | image_tag: class: 'image-block__image', loading: 'lazy', sizes: '(min-width: 750px) 50vw, 100vw'
+                }}
+              {% else %}
+                {{ 'image' | placeholder_svg_tag: 'placeholder-svg image-block__placeholder' }}
+              {% endif %}
+            </div>
+
+          {% when 'video' %}
+            <div class="zendrop-builder__block video-block" {{ block.shopify_attributes }}>
+              {% if block.settings.video_url != blank %}
+                {% assign video_url = block.settings.video_url %}
+                {% assign video_id = '' %}
+                {% if video_url contains 'youtu.be' %}
+                  {% assign video_id = video_url | split: '/' | last %}
+                {% elsif video_url contains 'youtube.com' %}
+                  {% assign query = video_url | split: '?' | last %}
+                  {% assign query_params = query | split: '&' %}
+                  {% for param in query_params %}
+                    {% assign parts = param | split: '=' %}
+                    {% if parts[0] == 'v' %}
+                      {% assign video_id = parts[1] %}
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+                <div class="video-block__container">
+                  <iframe
+                    class="video-block__iframe"
+                    src="https://www.youtube.com/embed/{{ video_id }}?autoplay={{ block.settings.autoplay }}&mute={{ block.settings.mute }}"
+                    frameborder="0"
+                    allowfullscreen
+                  ></iframe>
+                </div>
+              {% else %}
+                {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg video-block__placeholder' }}
+              {% endif %}
+            </div>
+          {% when 'custom_html' %}
+            <div class="zendrop-builder__block custom-html-block" {{ block.shopify_attributes }}>
+              {{ block.settings.custom_html }}
+            </div>
+
+          {% when 'accordion' %}
+            <div class="zendrop-builder__block accordion-block" {{ block.shopify_attributes }}>
+              <h2 class="accordion-block__heading">{{ block.settings.heading }}</h2>
+              {% if block.settings.description != blank %}
+                <div class="accordion-block__description">{{ block.settings.description }}</div>
+              {% endif %}
+              <div class="accordion-block__items">
+                {% for i in (1..5) %}
+                  {% assign question_setting = 'question_' | append: i %}
+                  {% assign answer_setting = 'answer_' | append: i %}
+                  {% if block.settings[question_setting] != blank and block.settings[answer_setting] != blank %}
+                    <div class="accordion-item">
+                      <button class="accordion-item__toggle" aria-expanded="false">
+                        {{ block.settings[question_setting] }}
+                        <span class="accordion-item__icon" aria-hidden="true">+</span>
+                      </button>
+                      <div class="accordion-item__content" hidden>
+                        {{ block.settings[answer_setting] }}
+                      </div>
+                    </div>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+
+          {% when 'multi_column' %}
+            <div
+              class="zendrop-builder__block multi-column-block column-{{ block.settings.column_count }}"
+              {{ block.shopify_attributes }}
+            >
+              {% for i in (1..block.settings.column_count) %}
+                {% assign image_setting = 'image_' | append: i %}
+                {% assign heading_setting = 'heading_' | append: i %}
+                {% assign text_setting = 'text_' | append: i %}
+                {% assign button_label_setting = 'button_label_' | append: i %}
+                {% assign button_link_setting = 'button_link_' | append: i %}
+
+                <div class="multi-column-block__column">
+                  {% if block.settings[image_setting] != blank %}
+                    <div class="multi-column-block__image-wrapper" style="text-align: center;">
+                      {{
+                        block.settings[image_setting]
+                        | image_url: width: 500
+                        | image_tag:
+                          class: 'multi-column-block__image',
+                          loading: 'lazy',
+                          sizes: '(min-width: 750px) 50vw, 100vw'
+                      }}
+                      <style>
+                        #zendrop-builder--{{ section.id }} .multi-column-block__image {
+                          max-width: {{ block.settings.image_size }};
+                          display: inline-block;
+                        }
+                      </style>
+                    </div>
+                  {% else %}
+                    {{ 'image' | placeholder_svg_tag: 'placeholder-svg multi-column-block__placeholder' }}
+                  {% endif %}
+                  {% if block.settings[heading_setting] != blank %}
+                    <h3 class="multi-column-block__heading">{{ block.settings[heading_setting] }}</h3>
+                  {% endif %}
+                  {% if block.settings[text_setting] != blank %}
+                    <div class="multi-column-block__text">{{ block.settings[text_setting] }}</div>
+                  {% endif %}
+                  {% if block.settings[button_label_setting] != blank %}
+                    <a href="{{ block.settings[button_link_setting] }}" class="multi-column-block__button">
+                      {{- block.settings[button_label_setting] -}}
+                    </a>
+                  {% endif %}
+                </div>
+              {% endfor %}
+            </div>
+        {% endcase %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const accordionToggles = document.querySelectorAll('.accordion-item__toggle');
+
+    accordionToggles.forEach((toggle) => {
+      toggle.addEventListener('click', function () {
+        const content = this.nextElementSibling;
+        const isExpanded = this.getAttribute('aria-expanded') === 'true';
+
+        this.setAttribute('aria-expanded', !isExpanded);
+        content.hidden = isExpanded;
+
+        if (!isExpanded) {
+          content.style.maxHeight = content.scrollHeight + 'px';
+        } else {
+          content.style.maxHeight = null;
+        }
+      });
+    });
+
+    function initSlickSlider(blockId) {
+      var sliderElement = $('#' + blockId + ' .image-video-slider');
+
+      sliderElement.on('init', function (event, slick) {
+        $(this).css('visibility', 'visible'); /* Show the slider after initialization */
+      });
+
+      sliderElement.slick({
+        infinite: sliderElement.data('infinite'),
+        autoplay: sliderElement.data('autoplay'),
+        dots: sliderElement.data('dots'),
+        arrows: sliderElement.data('arrows'),
+        slidesToShow: sliderElement.data('slides-to-show'),
+        slidesToScroll: sliderElement.data('slides-to-scroll'),
+        prevArrow: '<span class="material-symbols-outlined">chevron_left</span>',
+        nextArrow: '<span class="material-symbols-outlined">chevron_right</span>',
+        responsive: [
+          {
+            breakpoint: 749,
+            settings: {
+              slidesToShow: sliderElement.data('slides-to-show-mobile'),
+            },
+          },
+        ],
+      });
+    }
+
+    function destroySlickSlider(blockId) {
+      var sliderElement = $('#' + blockId + ' .image-video-slider');
+      if (sliderElement.hasClass('slick-initialized')) {
+        sliderElement.slick('unslick');
+      }
+    }
+
+    document.addEventListener('shopify:block:select', function (event) {
+      var blockId = event.detail.blockId;
+      if (event.target.querySelector('.image-video-slider')) {
+        initSlickSlider(blockId);
+      }
+    });
+
+    document.addEventListener('shopify:block:deselect', function (event) {
+      var blockId = event.detail.blockId;
+      if (event.target.querySelector('.image-video-slider')) {
+        destroySlickSlider(blockId);
+      }
+    });
+
+    // Initialize all sliders on page load
+    document.addEventListener('DOMContentLoaded', function () {
+      document.querySelectorAll('.zendrop-builder__block.slideshow-block').forEach(function (block) {
+        initSlickSlider(block.id);
+      });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Zendrop builder",
+  "settings": [
+    {
+      "type": "select",
+      "id": "display",
+      "label": "Display",
+      "options": [
+        {
+          "value": "desktop",
+          "label": "Desktop"
+        },
+        {
+          "value": "mobile",
+          "label": "Mobile"
+        },
+        {
+          "value": "both",
+          "label": "Both"
+        }
+      ],
+      "default": "both"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Button color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_label_color",
+      "label": "Button label",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "label": "Columns",
+      "default": 2
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Vertical alignment",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Top"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "flex-end",
+          "label": "Bottom"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "space_between_col",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Space between columns",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "space_between_row",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Space between rows",
+      "default": 16
+    }
+  ],
+  "blocks": [
+    {
+      "type": "rich_text",
+      "name": "Rich Text",
+      "settings": [
+        {
+          "type": "select",
+          "id": "heading_size",
+          "label": "Heading size",
+          "options": [
+            {
+              "value": "h3",
+              "label": "Small"
+            },
+            {
+              "value": "h2",
+              "label": "Medium"
+            },
+            {
+              "value": "h1",
+              "label": "Large"
+            }
+          ],
+          "default": "h1"
+        },
+        {
+          "type": "select",
+          "id": "alignment",
+          "label": "Text alignment",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "left"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Zendrop builder"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Welcome to the Zendrop builder section. Add rich text content here.</p>"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button Label",
+          "default": "Button label"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button Link"
+        },
+        {
+          "type": "range",
+          "id": "space_between_items",
+          "label": "Space between items",
+          "min": 0,
+          "max": 20,
+          "step": 1,
+          "unit": "px",
+          "default": 10
+        }
+      ]
+    },
+    {
+      "type": "accordion",
+      "name": "Accordion",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Accordion Heading",
+          "default": "Frequently Asked Questions"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Find answers to common questions below."
+        },
+        {
+          "type": "header",
+          "content": "Accordion Items"
+        },
+        {
+          "type": "text",
+          "id": "question_1",
+          "label": "Question 1",
+          "default": "What is your return policy?"
+        },
+        {
+          "type": "textarea",
+          "id": "answer_1",
+          "label": "Answer 1",
+          "default": "We offer a 30-day return policy for all unused items in their original packaging."
+        },
+        {
+          "type": "text",
+          "id": "question_2",
+          "label": "Question 2"
+        },
+        {
+          "type": "textarea",
+          "id": "answer_2",
+          "label": "Answer 2"
+        },
+        {
+          "type": "text",
+          "id": "question_3",
+          "label": "Question 3"
+        },
+        {
+          "type": "textarea",
+          "id": "answer_3",
+          "label": "Answer 3"
+        },
+        {
+          "type": "text",
+          "id": "question_4",
+          "label": "Question 4"
+        },
+        {
+          "type": "textarea",
+          "id": "answer_4",
+          "label": "Answer 4"
+        },
+        {
+          "type": "text",
+          "id": "question_5",
+          "label": "Question 5"
+        },
+        {
+          "type": "textarea",
+          "id": "answer_5",
+          "label": "Answer 5"
+        }
+      ]
+    },
+    {
+      "type": "image",
+      "name": "Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        }
+      ]
+    },
+    {
+      "type": "video",
+      "name": "Video",
+      "settings": [
+        {
+          "type": "video_url",
+          "id": "video_url",
+          "label": "Video URL",
+          "accept": ["youtube", "vimeo"]
+        },
+        {
+          "type": "checkbox",
+          "id": "autoplay",
+          "label": "Autoplay",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "mute",
+          "label": "Mute",
+          "default": true
+        }
+      ]
+    },
+    {
+      "type": "custom_html",
+      "name": "Custom HTML",
+      "settings": [
+        {
+          "type": "html",
+          "id": "custom_html",
+          "label": "Custom HTML"
+        }
+      ]
+    },
+    {
+      "type": "multi_column",
+      "name": "Multi-column",
+      "settings": [
+        {
+          "type": "range",
+          "id": "column_count",
+          "min": 2,
+          "max": 4,
+          "step": 1,
+          "label": "Number of Columns",
+          "default": 3
+        },
+        {
+          "type": "select",
+          "id": "image_size",
+          "label": "Image size",
+          "options": [
+            {
+              "value": "100%",
+              "label": "100%"
+            },
+            {
+              "value": "75%",
+              "label": "75%"
+            },
+            {
+              "value": "50%",
+              "label": "50%"
+            },
+            {
+              "value": "25%",
+              "label": "25%"
+            }
+          ],
+          "default": "100%"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_1",
+          "label": "Image 1"
+        },
+        {
+          "type": "text",
+          "id": "heading_1",
+          "label": "Heading 1"
+        },
+        {
+          "type": "richtext",
+          "id": "text_1",
+          "label": "Text 1"
+        },
+        {
+          "type": "text",
+          "id": "button_label_1",
+          "label": "Button Label 1"
+        },
+        {
+          "type": "url",
+          "id": "button_link_1",
+          "label": "Button Link 1"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_2",
+          "label": "Image 2"
+        },
+        {
+          "type": "text",
+          "id": "heading_2",
+          "label": "Heading 2"
+        },
+        {
+          "type": "richtext",
+          "id": "text_2",
+          "label": "Text 2"
+        },
+        {
+          "type": "text",
+          "id": "button_label_2",
+          "label": "Button Label 2"
+        },
+        {
+          "type": "url",
+          "id": "button_link_2",
+          "label": "Button Link 2"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_3",
+          "label": "Image 3"
+        },
+        {
+          "type": "text",
+          "id": "heading_3",
+          "label": "Heading 3"
+        },
+        {
+          "type": "richtext",
+          "id": "text_3",
+          "label": "Text 3"
+        },
+        {
+          "type": "text",
+          "id": "button_label_3",
+          "label": "Button Label 3"
+        },
+        {
+          "type": "url",
+          "id": "button_link_3",
+          "label": "Button Link 3"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_4",
+          "label": "Image 4"
+        },
+        {
+          "type": "text",
+          "id": "heading_4",
+          "label": "Heading 4"
+        },
+        {
+          "type": "richtext",
+          "id": "text_4",
+          "label": "Text 4"
+        },
+        {
+          "type": "text",
+          "id": "button_label_4",
+          "label": "Button Label 4"
+        },
+        {
+          "type": "url",
+          "id": "button_link_4",
+          "label": "Button Link 4"
+        }
+      ]
+    },
+    {
+      "type": "icon_with_text",
+      "name": "Icon with content",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Icon"
+        },
+        {
+          "type": "text",
+          "id": "icon",
+          "default": "check_circle",
+          "label": "Icon",
+          "info": "[View all available icons](https:\/\/fonts.google.com\/icons?icon.set=Material+Symbols&icon.platform=web)."
+        },
+        {
+          "type": "checkbox",
+          "id": "filled_icon",
+          "default": false,
+          "label": "Filled icon"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Custom icon"
+        },
+        {
+          "type": "select",
+          "id": "icon_position",
+          "options": [
+            {
+              "value": "above",
+              "label": "Above title & text"
+            },
+            {
+              "value": "next-to-title",
+              "label": "Next to title"
+            }
+          ],
+          "label": "Icon position",
+          "default": "next-to-title"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "default": "Icon with text",
+          "label": "Heading"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "default": "<p>Pair text with an icon to focus on your chosen product, collection, or blog post</p>",
+          "label": "Text"
+        },
+        {
+          "type": "header",
+          "content": "Icon"
+        },
+        {
+          "type": "text",
+          "id": "icon_second",
+          "default": "check_circle",
+          "label": "Icon",
+          "info": "[View all available icons](https:\/\/fonts.google.com\/icons?icon.set=Material+Symbols&icon.platform=web)."
+        },
+        {
+          "type": "checkbox",
+          "id": "filled_icon_second",
+          "default": false,
+          "label": "Filled icon"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_second",
+          "label": "Custom icon"
+        },
+        {
+          "type": "select",
+          "id": "icon_position_second",
+          "options": [
+            {
+              "value": "above",
+              "label": "Above title & text"
+            },
+            {
+              "value": "next-to-title",
+              "label": "Next to title"
+            }
+          ],
+          "label": "Icon position",
+          "default": "next-to-title"
+        },
+        {
+          "type": "text",
+          "id": "title_second",
+          "default": "Icon with text",
+          "label": "Heading"
+        },
+        {
+          "type": "richtext",
+          "id": "text_second",
+          "default": "<p>Pair text with an icon to focus on your chosen product, collection, or blog post</p>",
+          "label": "Text"
+        }
+
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Zendrop builder",
+      "blocks": [
+        {
+          "type": "rich_text"
+        },
+        {
+          "type": "image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

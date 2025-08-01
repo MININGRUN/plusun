@@ -1,0 +1,195 @@
+{% style %}
+{% for scheme in settings.color_schemes %}
+  .color-{{ scheme.id }} {
+    --color-foreground: {{ section.settings.text.red }},{{ section.settings.text.green }},{{ section.settings.text.blue }};
+    --color-shadow: {{ section.settings.shadow.red }},{{ section.settings.shadow.green }},{{ section.settings.shadow.blue }};
+    --color-button: {{ section.settings.button.red }},{{ section.settings.button.green }},{{ section.settings.button.blue }};
+    --color-button-text: {{ section.settings.button_label.red }},{{ section.settings.button_label.green }},{{ section.settings.button_label.blue }};
+    --color-secondary-button: {{ section.settings.outline_button.red }},{{ section.settings.outline_button.green }},{{ section.settings.outline_button.blue }};
+    --color-secondary-button-text: {{ section.settings.outline_button_label.red }},{{ section.settings.outline_button_label.green }},{{ section.settings.outline_button_label.blue }};
+  }
+{% endfor %}
+.color- {
+  --color-foreground: {{ section.settings.text.red }},{{ section.settings.text.green }},{{ section.settings.text.blue }};
+  --color-shadow: {{ section.settings.shadow.red }},{{ section.settings.shadow.green }},{{ section.settings.shadow.blue }};
+  --color-button: {{ section.settings.button.red }},{{ section.settings.button.green }},{{ section.settings.button.blue }};
+  --color-button-text: {{ section.settings.button_label.red }},{{ section.settings.button_label.green }},{{ section.settings.button_label.blue }};
+  --color-secondary-button: {{ section.settings.outline_button.red }},{{ section.settings.outline_button.green }},{{ section.settings.outline_button.blue }};
+  --color-secondary-button-text: {{ section.settings.outline_button.red }},{{ section.settings.outline_button.green }},{{ section.settings.outline_button.blue }};
+}
+
+
+h1,h2,h3,h4,h5,h6,p,
+.cart-progress__text,
+.custom-columns__block p,
+.content-and-comparison-table p,
+.comparison-table th,
+.frequently-bought-together__product p,
+.frequently-bought-together__info span,
+.content-and-results p,
+.splide__slide p,
+.title,
+.accordion-block__description,
+.accordion-item__toggle,
+.accordion-item__content,
+.share-button__button, .share-button__fallback button,
+.share-button + .product__view-details,
+.rte p, .rte,
+.main-page-title,
+.page-title {
+  color: {{ section.settings.text }};
+}
+.upsell-add-button,
+.frequently-bought-together__button,
+a.rich-text-block__button,
+.multi-column-block__button,
+button,
+.button--secondary {
+  background-color: {{ section.settings.button }} !important;
+  border-color: {{ section.settings.button }} !important;
+  color: {{ section.settings.button_label }} !important;
+}
+.section-divider svg,
+.rating-stars__container--overlay svg,
+.review-item__stars,
+.testimonial-card__stars{
+  color: {{ section.settings.accent }} !important;
+}
+.comparison-table__row-name.highlighted-cell {
+  background: {{ section.settings.accent }};
+}
+.footer,
+.footer h2,
+.footer a.link,
+.utility-bar,
+.badge,
+.announcement-bar__message span,
+span.header__active-menu-item,
+.countdown,
+.cart-progress__bar__progress {
+  background-color: {{ section.settings.accent }};
+  color: {{ section.settings.accent_text }};
+}
+
+p.urgency-text {
+  color: {{ section.settings.accent_text }} !important;
+  background-color: {{ section.settings.accent }} !important;
+}
+
+.cart-progress__bar__badge,
+.custom-header .drawer__close {
+  border-color: {{ section.settings.accent }};
+  color: {{ section.settings.accent }};
+}
+
+span.header__active-menu-item {
+  background-color: {{ section.settings.accent }} !important;
+  color: {{ section.settings.accent_text }} !important;
+}
+
+.countdown::after,
+.countdown strong {
+  color: {{ section.settings.accent_text }};
+}
+
+cart-remove-button button svg {
+  color: #000 !important;
+}
+
+.upsell-product__variant-selector {
+  color: {{ section.settings.outline_button }};
+  border-color: {{ section.settings.outline_button }};
+}
+.results__percentage::before {
+  background: conic-gradient(var(--percentage-color, {{ section.settings.accent }}) 0%, var(--percentage-color, {{ section.settings.accent }}) calc(var(--percentage, 0) * 1%), transparent calc(var(--percentage, 0) * 1%), transparent 100%) !important;
+}
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Store colors changer",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "This section is used to change your global store colors on THIS PAGE ONLY."
+    },
+    {
+      "type": "header",
+      "content": "IMPORTANT"
+    },
+    {
+      "type": "paragraph",
+      "content": "Place this section on top of the list of your added sections to avoid any delays in loading of the changed colors."
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "text",
+      "label": "Text",
+      "default": "#212240"
+    },
+    {
+      "type": "color",
+      "id": "shadow",
+      "label": "Shadow"
+    },  
+    {
+      "type": "header",
+      "content": "Accent colors"
+    },
+    {
+      "type": "color",
+      "id": "accent",
+      "label": "Accent",
+      "default": "#8472ED"
+    },
+    {
+      "type": "color",
+      "id": "accent_text",
+      "label": "Accent text",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Solid button colors"
+    },
+    {
+      "type": "color",
+      "id": "button",
+      "label": "Solid button background",
+      "default": "#8472ED"
+    },
+    {
+      "type": "color",
+      "id": "button_label",
+      "label": "Solid button label",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Secondary button colors"
+    },
+    {
+      "type": "color",
+      "id": "outline_button",
+      "label": "Secondary button",
+      "default": "#8472ED"
+    },
+    {
+      "type": "color",
+      "id": "outline_button_label",
+      "label": "Secondary button label",
+      "default": "#FFFFFF"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Store colors changer"
+    }
+  ]
+}
+{% endschema %}

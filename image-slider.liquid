@@ -1,0 +1,294 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<section id="image-slider-{{ section.id }}" class="section-{{ section.id }}-padding">
+  <div class="page-width">
+    <h2 class="title inline-richtext h1">{{ section.settings.heading }}</h2>
+
+    <div class="image-video-slider{% if section.settings.center_align %} center-align{% endif %}"
+         data-infinite="{{ section.settings.infinite }}"
+         data-autoplay="{{ section.settings.autoplay }}"
+         data-dots="{{ section.settings.dots }}"
+         data-arrows="{{ section.settings.arrows }}"
+         data-slides-to-show="{{ section.settings.slides_to_show }}"
+         data-slides-to-scroll="{{ section.settings.slides_to_scroll }}"
+         data-slides-to-show-mobile="{{ section.settings.slides_to_show_mobile }}">
+      {% for block in section.blocks %}
+        {% case block.type %}
+          {% when 'image_slide' %}
+            <div class="image-slide-container">
+              {% if block.settings.image != blank %}
+                <div class="image-slide">
+                  <img src="{{ block.settings.image | img_url: 'master' }}" alt="{{ block.settings.image.alt }}">
+                </div>
+              {% else %}
+                <div class="placeholder">{{ 'product-1' | placeholder_svg_tag }}</div>
+              {% endif %}
+            </div>
+          {% when 'video_slide' %}
+            {% render 'video-player', block: block %}
+        {% endcase %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<style>
+  .image-video-slider {
+    position: relative;
+    visibility: hidden; /* Initially hide the slider */
+  }
+  .slick-slide {
+    padding: 10px;
+  }
+  .slick-slide img,
+  .slick-slide video {
+    max-width: 100%;
+    border-radius: calc(var(--media-radius) - var(--media-border-width));
+  }
+  .slick-dots {
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    list-style: none;
+    gap: 5px;
+  }
+  .slick-dots li button {
+    font-size: 0;
+    padding: 0;
+    background: #ccc;
+    width: 10px;
+    height: 10px;
+    border: 1px solid #ccc;
+    border-radius: 100px;
+  }
+  .slick-dots li.slick-active button {
+    background-color: #000;
+    border-color: #000;
+  }
+  .material-symbols-outlined.slick-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .material-symbols-outlined.slick-arrow:first-of-type {
+    left: -25px;
+  }
+  .material-symbols-outlined.slick-arrow:last-of-type {
+    right: -25px;
+  }
+  @media(max-width: 749px) {
+    .material-symbols-outlined.slick-arrow:first-of-type {
+    left: -15px;
+  }
+  .material-symbols-outlined.slick-arrow:last-of-type {
+    right: -15px;
+  }
+  }
+  .center-align .slick-track {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>
+
+<script>
+function initSlickSlider(sectionId) {
+  var sliderElement = $('#image-slider-' + sectionId + ' .image-video-slider');
+  
+  sliderElement.on('init', function(event, slick){
+    $(this).css('visibility', 'visible'); /* Show the slider after initialization */
+  });
+
+  sliderElement.slick({
+    infinite: sliderElement.data('infinite'),
+    autoplay: sliderElement.data('autoplay'),
+    dots: sliderElement.data('dots'),
+    arrows: sliderElement.data('arrows'),
+    slidesToShow: sliderElement.data('slides-to-show'),
+    slidesToScroll: sliderElement.data('slides-to-scroll'),
+    prevArrow: '<span class="material-symbols-outlined">chevron_left</span>',
+    nextArrow: '<span class="material-symbols-outlined">chevron_right</span>',
+    responsive: [
+      {
+        breakpoint: 749,
+        settings: {
+          slidesToShow: sliderElement.data('slides-to-show-mobile')
+        }
+      }
+    ]
+  });
+}
+
+function destroySlickSlider(sectionId) {
+  var sliderElement = $('#image-slider-' + sectionId + ' .image-video-slider');
+  if (sliderElement.hasClass('slick-initialized')) {
+    sliderElement.slick('unslick');
+  }
+}
+
+$(document).on('shopify:section:load', function(event) {
+  var sectionId = event.detail.sectionId;
+  initSlickSlider(sectionId);
+});
+
+$(document).on('shopify:section:unload', function(event) {
+  var sectionId = event.detail.sectionId;
+  destroySlickSlider(sectionId);
+});
+
+$(document).ready(function () {
+  var sectionId = '{{ section.id }}';
+  initSlickSlider(sectionId);
+});
+</script>
+
+{% schema %}
+{
+  "name": "Image/Video Slider",
+  "class": "section",
+  "tag": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Image & video slider"
+    },
+    {
+      "type": "checkbox",
+      "id": "infinite",
+      "label": "Infinite",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Autoplay",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "dots",
+      "label": "Show dots",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "arrows",
+      "label": "Show arrows",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "center_align",
+      "label": "Center align slides",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "slides_to_show",
+      "label": "Slides to show (desktop)",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "slides_to_show_mobile",
+      "label": "Slides to show (mobile)",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "slides_to_scroll",
+      "label": "Slides to scroll",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image_slide",
+      "name": "Image slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        }
+      ]
+    },
+    {
+      "type": "video_slide",
+      "name": "Video slide",
+      "settings": [
+        {
+          "type": "video",
+          "id": "video",
+          "label": "Video"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image/Video Slider",
+      "blocks": [
+        {
+          "type": "image_slide"
+        },
+        {
+          "type": "image_slide"
+        },
+        {
+          "type": "image_slide"
+        },
+        {
+          "type": "image_slide"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
