@@ -1,0 +1,359 @@
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var quantitySelector = document.querySelector('.quantity-selector');
+    var productForm = document.querySelector('product-form');
+    var productPrice = {{ product.price | json }};
+    var allOptions = quantitySelector.querySelectorAll('.quantity-option');
+    var mostPopularOption = quantitySelector.querySelector('.quantity-option .most-popular');
+    var defaultOption;
+
+    // Initially hide the quantity selector to avoid flickering
+    quantitySelector.style.visibility = 'hidden';
+
+    allOptions.forEach(function(option) {
+      option.classList.remove('active');
+    });
+
+    if (mostPopularOption) {
+      defaultOption = mostPopularOption.closest('.quantity-option');
+    } else {
+      defaultOption = allOptions[0];
+    }
+
+    var defaultInput = defaultOption.querySelector('input[type="radio"]');
+    var defaultQuantity = defaultOption.dataset.quantity;
+
+    defaultOption.classList.add('active');
+    defaultInput.checked = true;
+
+    document.getElementById('hiddenQuantityInput').value = defaultQuantity;
+
+    // Show the quantity selector after initialization
+    quantitySelector.style.visibility = 'visible';
+
+    // Add click event listener to each quantity option
+    allOptions.forEach(function(option) {
+      option.addEventListener('click', function() {
+        // Remove active class from all options
+        allOptions.forEach(function(opt) {
+          opt.classList.remove('active');
+          opt.querySelector('input[type="radio"]').checked = false;
+        });
+
+        // Add active class to the clicked option and check the radio button
+        option.classList.add('active');
+        var radioInput = option.querySelector('input[type="radio"]');
+        radioInput.checked = true;
+
+        var quantity = parseInt(option.dataset.quantity);
+        var price = option.dataset.price || productPrice;
+        var totalPrice = quantity * price;
+        var compareAtPrice = productPrice * quantity;
+        var savedAmount = compareAtPrice - totalPrice;
+
+        document.getElementById('hiddenQuantityInput').value = quantity;
+        option.querySelector('.total-price').textContent = Shopify.formatMoney(totalPrice, {{ shop.money_format | json }});
+        option.querySelector('.saved-amount').textContent = Shopify.formatMoney(savedAmount, {{ shop.money_format | json }});
+
+        var quantityInput = productForm.querySelector('.quantity__input');
+        if (quantityInput) {
+          quantityInput.value = quantity;
+          quantityInput.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+
+        var variantId = productForm.querySelector('[name="id"]').value;
+        var sectionId = productForm.dataset.section;
+        publish(PUB_SUB_EVENTS.variantChange, {
+          data: {
+            sectionId: sectionId,
+            variant: {
+              id: variantId
+            }
+          }
+        });
+      });
+    });
+  });
+</script>
+
+<style>
+  .quantity-selector {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 25px;
+  }
+
+  .quantity-option.active {
+    background-color: rgba(var(--color-foreground), 0.1);
+    border-color: rgba(var(--color-foreground));
+  }
+
+  .quantity-option {
+    padding: 15px 20px; /* Increased padding */
+    border: 2px solid rgba(var(--color-foreground), 0.15);
+    border-radius: 10px;
+    position: relative;
+    max-width: 100%;
+  }
+
+  .quantity-option .most-popular {
+    position: absolute;
+    font-weight: bold;
+    padding: 5px;
+    background-color: rgb(var(--color-foreground));
+    color: rgb(var(--color-button-text));
+    font-weight: 700;
+    font-size: 15px;
+    top: -1rem;
+    right: -1rem;
+    transform: rotate(3deg);
+    margin: 0;
+    padding: 0 0.5em;
+    border-radius: 0.2em;
+  }
+  @keyframes easeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  .quantity-selector {
+    animation: easeIn 1s forwards;
+  }
+
+  .quantity-option input[type='radio'] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    position: absolute;
+    opacity: 0;
+  }
+
+  .quantity-option label {
+    cursor: pointer;
+    position: relative;
+    padding-left: 30px; /* adjust for proper alignment */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .quantity-option label:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 20px;
+    width: 20px;
+    background: #fff;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    box-sizing: border-box;
+  }
+
+  .quantity-option input[type='radio']:checked + label:before {
+    background: rgba(var(--color-foreground), 1);
+    border-color: rgba(var(--color-foreground), 1);
+  }
+
+  .quantity-option h3 {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .quantity-option p {
+    margin-top: 0;
+    margin-bottom: 0;
+    line-height: 22px;
+  }
+
+  .quantity-option p strong {
+    font-size: 18px;
+  }
+
+  .quantity-breaks__title {
+    margin: 0;
+    font-size: 1.4rem;
+    line-height: 1;
+    column-gap: 10px;
+    margin-bottom: 1.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .quantity-breaks__title span:nth-of-type(1),
+  .quantity-breaks__title span:nth-of-type(3) {
+    display: block;
+    height: 2px;
+    flex-grow: 1;
+    background: #000;
+  }
+  .variant-select {
+    display: none;
+    border-radius: var(--inputs-radius);
+    font-family: var(--font-body-family);
+    border-color: rgba(var(--color-foreground));
+    padding: 5px 5px;
+    margin-top: 5px;
+  }
+  .quantity-option.active .variant-select {
+    display: block;
+  }
+
+  @media(max-width: 749px) {
+    .quantity-option .most-popular {
+      right: 0;
+    }
+  }
+  .product-form__quantity {
+    display: none;
+  }
+</style>
+
+<div class="quantity-selector">
+  <h3 class="quantity-breaks__title flex-center center">
+    <span></span>
+    <span>GET MORE, SAVE MORE</span>
+    <span></span>
+  </h3>
+  <input type="hidden" name="quantity" id="hiddenQuantityInput" value="1">
+
+  {% for i in (1..4) %}
+    {% assign heading = 'option' | append: i | append: '_heading' %}
+    {% assign quantity = 'option' | append: i | append: '_quantity' %}
+    {% assign price = 'option' | append: i | append: '_price' %}
+    {% assign compare_at_price = 'option' | append: i | append: '_compare_at_price' %}
+    {% assign text_setting = 'option' | append: i | append: '_text' %}
+  
+    {% assign saved_amount = block.settings[compare_at_price] | minus: block.settings[price] %}
+    {% assign saved_amount_money = saved_amount | times: 100 | money %}
+    {% assign text = block.settings[text_setting] %}
+    
+    {% assign replaced_text = '' %}
+    {% if text != blank %}
+      {% assign replaced_text = text | replace: '[saved]', saved_amount_money %}
+    {% endif %} 
+
+    {% if block.settings[heading] != blank %}
+      <div
+        class="quantity-option {% if forloop.first %}active{% endif %}"
+        data-quantity="{{ block.settings[quantity] }}"
+        data-price="{{ block.settings[price] }}"
+      >
+        {% if block.settings.most_popular == block.settings[heading] %}
+          <span class="most-popular">MOST POPULAR</span>
+        {% endif %}
+        <input
+          type="radio"
+          id="option{{ i }}"
+          name="quantity-option"
+          {% if block.settings.most_popular == block.settings[heading] %}
+            checked
+          {% endif %}
+        >
+        <label for="option{{ i }}">
+          <div>
+            <h3>{{ block.settings[heading] }}</h3>
+            {% if replaced_text != blank %}
+              <p>{{ replaced_text }}</p>
+            {% endif %}
+  
+            {% unless product.has_only_default_variant %}
+              <select class="variant-select">
+                {% for variant in product.variants %}
+                  <option value="{{ variant.id }}">{{ variant.title }}</option>
+                {% endfor %}
+              </select>
+            {% endunless %}
+          </div>
+  
+          <div>
+            <p>
+              <strong>{{ block.settings[price] | times: 100 | money }}</strong>
+            </p>
+            {% if block.settings[compare_at_price] > block.settings[price] %}
+              <p>
+                <strike>{{ block.settings[compare_at_price] | times: 100 | money }}</strike>
+              </p>
+            {% endif %}
+          </div>
+        </label>
+      </div>
+    {% endif %}
+  {% endfor %}  
+
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const quantitySelector = document.querySelector('.quantity-selector');
+    const hiddenQuantityInput = document.getElementById('hiddenQuantityInput');
+    const variantIdInput = document.querySelector('.product-variant-id');
+    const quantityOptions = document.querySelectorAll('.quantity-option');
+    const variantSelects = document.querySelectorAll('.variant-select');
+
+    // Function to update the hidden quantity input
+    function updateQuantity(quantity) {
+      hiddenQuantityInput.value = quantity;
+    }
+
+    // Function to update the variant ID input
+    function updateVariantId(variantId) {
+      variantIdInput.value = variantId;
+
+      // Check if the selected variant is available
+      const selectedOption = document.querySelector(`.variant-select option[value="${variantId}"]`);
+      if (selectedOption && selectedOption.disabled) {
+        variantIdInput.disabled = true;
+      } else {
+        variantIdInput.disabled = false;
+      }
+    }
+
+    // Event listener for quantity option selection
+    quantityOptions.forEach((option) => {
+      option.addEventListener('click', function () {
+        // Remove active class from all options
+        quantityOptions.forEach((opt) => opt.classList.remove('active'));
+        // Add active class to clicked option
+        this.classList.add('active');
+
+        // Update quantity
+        const quantity = this.dataset.quantity;
+        updateQuantity(quantity);
+
+        // Update variant ID (select the first option in the dropdown)
+        const variantSelect = this.querySelector('.variant-select');
+        if (variantSelect) {
+          updateVariantId(variantSelect.value);
+        }
+      });
+    });
+
+    // Event listener for variant selection
+    variantSelects.forEach((select) => {
+      select.addEventListener('change', function () {
+        updateVariantId(this.value);
+      });
+    });
+
+    // Initialize with the first selected option
+    const initialOption = document.querySelector('.quantity-option.active');
+    if (initialOption) {
+      const initialQuantity = initialOption.dataset.quantity;
+      updateQuantity(initialQuantity);
+
+      const initialVariantSelect = initialOption.querySelector('.variant-select');
+      if (initialVariantSelect) {
+        updateVariantId(initialVariantSelect.value);
+      }
+    }
+  });
+</script>

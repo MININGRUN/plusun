@@ -1,0 +1,23 @@
+<div class="cart-social-proof" {{ block.shopify_attributes }}>
+  {% if block.settings.social_proof_title %}
+    <h4>{{ block.settings.social_proof_title }}</h4>
+  {% endif %}
+  {% if block.settings.enable_rating_stars %}
+    {% render 'rating-stars-block', block: block %}
+  {% endif %}
+</div>
+
+<style>
+  .cart-social-proof {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    align-items: center;
+    gap: 10px;
+    justify-content: {{ block.settings.justify_content }};
+    margin-top: 5px;
+  }
+  .cart-social-proof h4 {
+    margin: 0;
+  }
+</style>

@@ -1,0 +1,107 @@
+{% liquid
+  assign goal = block.settings.free_shipping_goal
+  assign goal_progress = cart.items_subtotal_price | divided_by: goal
+  assign goal_reached = false
+
+  if goal_progress > 100.00
+    assign goal_reached = true
+    assign goal_progress = 100
+  endif
+
+  assign goal_difference_money = goal | minus: goal_progress
+%}
+
+<div class="cart-progress color-{{ block.settings.free_shipping_color_scheme }}">
+  <p class="cart-progress__text">
+    {% if goal_reached == false %}
+      {{ block.settings.free_shipping_message | replace: '[amount]', goal_difference_money }}
+    {% else %}
+      {{ block.settings.free_shipping_success_message }}
+    {% endif %}
+  </p>
+  <div class="cart-progress__bar">
+    <div class="cart-progress__bar__progress" style="width: {{ goal_progress }}%;">
+      <div class="cart-progress__bar__badge">
+        {%- unless block.settings.icon == 'none' -%}
+          <span class="material-symbols-outlined">local_shipping</span>
+        {%- endunless -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+ .cart-progress__bar__progress {
+    background-color: rgb({{ block.settings.progress.red }},{{ block.settings.progress.green }},{{ block.settings.progress.blue }});
+ }
+ .cart-progress__bar__badge {
+    border: 2px solid rgb({{ block.settings.progress.red }},{{ block.settings.progress.green }},{{ block.settings.progress.blue }});
+ }
+ .cart-progress__bar__badge span {
+    color: rgb({{ block.settings.progress.red }},{{ block.settings.progress.green }},{{ block.settings.progress.blue }});
+ }
+ .cart-progress__bar__progress {
+    transition: width 0.5s ease-in-out;
+}
+</style>
+
+<script> 
+document.addEventListener("DOMContentLoaded", function () {
+  let lastItemCount = null;
+
+  function fetchCart() {
+    fetch("/cart.js")
+      .then((response) => response.json())
+      .then((cart) => {
+        if (lastItemCount !== cart.item_count) {
+
+          // const subtotalElement = document.querySelector(".totals__total-value");
+          // if (subtotalElement) {
+          //   subtotalElement.textContent = '$' + (cart.total_price / 100);
+          // }
+
+          lastItemCount = cart.item_count;
+
+          // Update the progress bar width
+          var progressBar = document.querySelector('.cart-progress__bar__progress');
+          var goal = parseFloat('{{ block.settings.free_shipping_goal }}');
+          var goalProgress = (cart.items_subtotal_price / goal);
+
+          var goalDifference = goal - goalProgress;
+          var originalText = "{{ block.settings.free_shipping_message }}";
+          var updatedText = originalText.replace('[amount]', goalDifference.toFixed(2));
+
+          if (goalProgress >= 100) {
+            goalProgress = 100;
+          }
+
+          if (goalProgress >= goal) {
+            document.querySelector('.cart-progress__text').textContent = "{{ block.settings.free_shipping_success_message }}";
+          } else {
+            document.querySelector('.cart-progress__text').textContent = updatedText;
+          }
+
+          progressBar.style.width = goalProgress.toFixed(2) + '%';
+
+        }
+      })
+      .catch((error) => console.error("Failed to fetch cart:", error));
+  }
+
+  setInterval(fetchCart, 250);
+  fetchCart();
+
+  // Fetch cart data when any ".quantity__button" button is clicked
+  document.querySelectorAll(".quantity__button").forEach(function (button) {
+    button.addEventListener("click", function () {
+      fetchCart();
+    });
+  });
+
+  document
+    .querySelector(".product-form__submit")
+    .addEventListener("click", function () {
+      fetchCart();
+    });
+});
+</script>

@@ -1,0 +1,58 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ block.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ block.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ block.settings.padding_top }}px;
+      padding-bottom: {{ block.settings.padding_bottom }}px;
+    }
+  }
+  .shipping-estimator {
+    text-align: center;
+    font-size: 1.2rem;
+    color: var(--color-foreground);
+  }
+
+  .shipping-estimator p {
+    font-family: var(--font-heading-family);
+    font-style: var(--font-heading-style);
+    font-weight: var(--font-heading-weight);
+    letter-spacing: calc(var(--font-heading-scale) * 0.06rem);
+    color: rgb(var(--color-foreground));
+    line-height: calc(1 + 0.3 / max(1, var(--font-heading-scale)));
+    word-break: break-word;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .shipping-estimator .material-icons {
+    vertical-align: middle;
+    margin-right: 0.5rem;
+  }
+{%- endstyle -%}
+
+<div class="section-{{ section.id }}-padding">
+  <div class="shipping-estimator">
+    {% assign fulfilment_days = block.settings.fulfilment_days | plus: 0 %}
+    {% assign shipping_days = block.settings.shipping_days | plus: 0 %}
+    {% assign buffer_days = block.settings.buffer_days | plus: 0 %}
+    
+    {% assign min_days = fulfilment_days | plus: shipping_days %}
+    {% assign max_days = min_days | plus: buffer_days %}
+    
+    {% if buffer_days > 0 %}
+      {% assign days_text = min_days | append: '-' | append: max_days %}
+    {% else %}
+      {% assign days_text = min_days %}
+    {% endif %}
+
+    <p style="justify-content: {{ block.settings.position }};">
+      {% if block.settings.show_icon %}<span class="material-symbols-outlined">local_shipping</span>{% endif %}  
+      {{ block.settings.estimator_text | replace: '[days]', days_text }}
+    </p>
+  </div>
+</div>

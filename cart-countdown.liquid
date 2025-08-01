@@ -1,0 +1,80 @@
+<div class="countdown color-scheme-3">
+  <strong>{{ block.settings.cart_countdown_title }}</strong>
+</div>
+
+<style>
+@property --t {
+  syntax: "<number>";
+  initial-value: {{ block.settings.cart_countdown_time | times: 60 }};
+  inherits: true;
+}
+.countdown {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 15px;
+  background: {{ block.settings.background_color }};
+  animation: t {{ block.settings.cart_countdown_time | times: 60 }}s linear infinite;
+}
+.countdown strong {
+  font-family: var(--font-heading-family);
+  font-style: var(--font-heading-style);
+  font-weight: var(--font-heading-weight);
+  letter-spacing: calc(var(--font-heading-scale) * 0.06rem);
+  color: {{ block.settings.text_color }};
+  font-size: 14px;
+  margin-right: 5px;
+}
+.countdown::after {
+  font-family: var(--font-heading-family);
+  font-style: var(--font-heading-style);
+  font-weight: var(--font-heading-weight);
+  letter-spacing: calc(var(--font-heading-scale) * 0.06rem);
+  font-size: 14px;
+  content: attr(data-minutes) ":" attr(data-seconds);
+  color: {{ block.settings.text_color }};
+}
+
+@keyframes t {
+  to {
+    --t: 0;
+  }
+}
+svg {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+[r] {
+  fill: none;
+  stroke: silver;
+}
+[r] + [r] {
+  --k: calc(var(--t)/20);
+  transform: rotate(-90deg);
+  stroke-linecap: round;
+  stroke: color-mix(in hsl shorter hue, #8a9b0f calc(var(--k)*100%), #940a3d);
+  stroke-dasharray: var(--k) 1;
+}
+</style>
+
+<script>
+function updateCountdown() {
+  const countdownElement = document.querySelector('.countdown');
+  const initialSeconds = {{ block.settings.cart_countdown_time | times: 60 }};
+  const elapsedSeconds = Math.floor((initialSeconds * 1000 - performance.now()) / 1000);
+  const minutes = Math.floor(elapsedSeconds / 60);
+  const seconds = Math.floor(elapsedSeconds % 60);
+
+  if (elapsedSeconds <= 0) {
+    clearInterval(countdownInterval);
+    countdownElement.setAttribute('data-minutes', '00');
+    countdownElement.setAttribute('data-seconds', '00');
+  } else {
+    countdownElement.setAttribute('data-minutes', minutes.toString().padStart(2, '0'));
+    countdownElement.setAttribute('data-seconds', seconds.toString().padStart(2, '0'));
+  }
+}
+
+const countdownInterval = setInterval(updateCountdown, 1000);
+</script>
